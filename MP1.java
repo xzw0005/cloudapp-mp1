@@ -3,6 +3,10 @@ import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class MP1 {
     Random generator;
@@ -53,7 +57,10 @@ public class MP1 {
         String[] ret = new String[20];
        
 		//TODO
-		List<String> allLines = Files.readAllLines(Paths.get(this.inputFileName), StandardCharsets.UTF_8);
+		//List<String> allLines = Files.readAllLines(Paths.get(this.inputFileName), StandardCharsets.UTF_8);
+		File inputFile = new File(this.inputFileName);
+		Scanner scanner = new Scanner(file);
+		
 		
 		Map<String, Integer> wordCounts = new HashMap<String, Integer>();
 		

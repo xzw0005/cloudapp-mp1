@@ -52,7 +52,35 @@ public class MP1 {
     public String[] process() throws Exception {
         String[] ret = new String[20];
        
-        //TODO
+		//TODO
+		List<String> allLines = Files.readAllLines(Paths.get(this.inputFileName), StandardCharsets.UTF_8);
+		
+		Map<String, Integer> wordCounts = new HashMap<String, Integer>();
+		
+		for (int i: this.getIndexes()) {
+			StringTokenizer st = new StringTokenizer(allLines.get(i), this.delimiters, false);
+			
+			while (st.hasMoreTokens()) {
+				String word = st.nextToken().toLowerCase().trim();
+				if (word == "" || this.stopWords.contains(word))
+					continue;
+				
+				Integer count = wordCounts.get(word);
+				if (count == null) 
+					wordCounts.put(word, 1);
+				else
+					wordCounts.put(word, count + 1);
+			}
+		}
+		
+		//Map<String, Integer> sortedMap = sortByValues(sortByKeys(wordCounts));
+		Map<String, Integer> keySorted = new TreeMap<String, Integer>(wordCounts); // sort a map by keys
+		Map<String, Integer> sortedMap = sortByValues(keySorted);		
+		
+		Set<String> keys = sortedMap.keySet();
+		String[] keyArray = keys.toArray(new String[keys.size()]);
+		ret = Arrays.copyOf(keyArray, 20);		
+		//END TODO
 
         return ret;
     }
@@ -71,4 +99,38 @@ public class MP1 {
             }
         }
     }
+	
+	/*
+	private static Map<String, Integer> sortByKeys(Map<String, Integer> rawMap) {
+		List<Map.Key<String, Integer>> keyList = new LinkedList<Map.Key<String, Integer>>(rawMap.keySet());
+		Collections.sort(keyList);
+		Map<String, Integer> keySorted = new LinkedHashMap<String, Integer>();
+		for (Map.Key<String, Integer> key: keyList) {
+			keySorted.put(key, rawMap.get(key));
+		}
+		return keySorted;
+	}
+	*/
+	
+	private static Map<String, Integer> sortByValues(Map<String, Integer> unsortMap) {
+		// Convert Map to List
+		List<Map.Entry<String, Integer>> valList = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+		// Sort list with comparator, to compare the Map values
+		Collections.sort(
+			valList, new Comparator<Map.Entry<String, Integer>>() {
+				public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+					return (o2.getValue()).compareTo(o1.getValue());	// for descending order
+				}
+			}
+		);
+		// Convert sorted map back to a Map
+		Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+		//for (Iterator<Map.Entry<String, Integer>> iter = valList.iterator(); iter.hasNext();) {
+			//Map.Entry<String, Integer> entry = iter.next(); 
+		for (Map.Entry<String, Integer> entry: valList) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
+	}
+
 }
